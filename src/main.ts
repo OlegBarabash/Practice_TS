@@ -1,3 +1,17 @@
+// ====== lesson 1 ========
+let username = 'Oleg B';
+console.log(username);
+
+let a: number = 12
+let b: string = '6'
+let c: number = 2
+
+console.log(a / b);
+
+console.log(c * b);
+
+// ======= lesson 2 ==========
+
 let myName: string = 'Oleg'
 let meaningOfLife: number;
 let isLoading: boolean;
