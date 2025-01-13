@@ -1,105 +1,111 @@
-let stringArr = ['one', 'hey', 'Dave']
+// ======== Type Aliases ========
 
-let guitars = ['Strat', 'Les Pal', 5150]
+type stringOrNumber = string | number
 
-let mixedData = ['EVH', 1984, true]
+type stringOrNumberArray = (string | number)[]
 
-stringArr[0] = 'John'
-stringArr.push('hey')
-
-guitars[0] = 1984
-guitars.unshift('Jim')
-
-guitars = stringArr
-// stringArr = guitars // not ok
-mixedData = guitars
-// guitars = mixedData  // not ok
-
-let test = []
-let bands: string[] = []
-bands.push('Van Halen')
-
-
-
-// ======Tuple==========
-
-let myTuple: [string, number, boolean] = ['Oleg', 35, true]
-
-let mixed = ['John', 1, true]
-
-// myTuple = mixed // not ok
-mixed = myTuple // ok
-// myTuple[3] = 33 // not ok
-// myTuple[2] = 33 // not ok
-myTuple[1] = 33 // ok
-
-
-// ========= Object =========
-
-let myObj: object
-myObj = []
-console.log(typeof myObj);
-myObj = bands
-myObj = {}
-
-const exampleObj = {
-    prop1: 'Dave',
-    prop2: true,
+type Guitarist = {
+    name?: string,
+    active: boolean, // ? - optional field
+    albums: stringOrNumberArray
 }
 
-// exampleObj.prop1 = 42 // not ok
-exampleObj.prop1 = 'Oleg'
+type UserId = stringOrNumber
+
+// interface UserId2 = stringOrNumber // not ok
 
 
-// ============== type & interface ==========
+// ========== Literal type ========
 
-// type Guitarist = {
-//     name: string,
-//     active?: boolean, // ? - optional field
-//     albums: (string | number)[]
-// }
+let myName: 'Oleg'
 
-//   OR
+let userName: 'Dave' | 'John' | 'Amy'
 
-interface Guitarist {
-    name: string,
-    active?: boolean, // ? - optional field
-    albums: (string | number)[]
+userName = 'John'
+
+// ======= functions ==========
+
+const add = (a: number, b: number): number => {
+    return a + b
 }
 
-let evh: Guitarist = {
-    name: 'Eddie',
-    active: false,
-    albums: [1989, 5156, 'OU812']
+const logMsg = (message: any): void => {
+    console.log(message);
 }
 
-let jp: Guitarist = {
-    name: 'Jimmy',
-    active: true,
-    albums: ['I', 'II', 'IV']
+logMsg('Hello!')
+logMsg(add(2,3))
+// logMsg(add('a', 3)) // not ok 
+
+let subtract = function (c:number, d: number): number {
+    return c - d
 }
 
-evh = jp // ok
-// evh.years = 40 // not ok
+logMsg(subtract(5,3))
 
-
-// ======== functions =============
-
-const greetGuitarist = (guitarist: Guitarist) => {
-    return `Hello ${guitarist.name}!`
+type mathFunction = (a: number, b: number) => number
+//== OR ==
+interface mathFunctionI {
+    (a: number, b: number): number
 }
 
-console.log(greetGuitarist(jp));
-
-
-// ========= Enums =======
-
-enum Grade {
-    U = 1,
-    D,
-    C,
-    B,
-    A,
+let multiply: mathFunction = function (c,d) {
+    return c * d
 }
 
-console.log(Grade.A);
+logMsg(multiply(2,2))
+
+// ====== optional parameters =========
+
+const  addAll = (a: number, b: number, c?: number): number => {
+    if (typeof c !== 'undefined')
+        return a + b + c
+    return a + b
+}
+
+const  sumAll = (a: number = 10, b: number, c: number = 2): number => {
+    return a + b + c
+}
+
+logMsg(addAll(2, 3, 2))
+logMsg(addAll(2, 3))
+logMsg(sumAll(2, 3))
+logMsg(sumAll(undefined, 3))
+
+// ===== Resp Parameters ====
+
+const total = (a: number, ...nums: number[]) => {
+    return a + nums.reduce((prev, curr) => prev + curr)
+}
+
+logMsg(total(1,2,3,4))
+
+// ==== never type ===
+
+const createError = (errMsg: string): never => {
+    throw new Error(errMsg)
+}
+
+const infinite = () => {
+    let i: number = 1
+    while (true){
+        i++
+        if (i > 100)
+            break  // with out the type is NEVER!!!!
+    } 
+}
+
+// custom type guard
+const isNumber = (value: any): boolean => {
+    return typeof value === 'string'
+        ? true : false
+}
+
+// use of the NEVER type
+const numberOrString = (value: number | string): string => {
+    if (typeof value === 'string')
+        return 'string'
+    if (isNumber(value))
+        return 'number'
+    return createError('This should never happen!')
+}
