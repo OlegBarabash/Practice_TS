@@ -1,111 +1,34 @@
-// ======== Type Aliases ========
+// ==== Type Assertion or Type Casting ==========
 
-type stringOrNumber = string | number
+type One = string
+type Two = string | number
+type Three = 'hello'
 
-type stringOrNumberArray = (string | number)[]
+// convert to more or less specific
+let a: One = 'hello'
+let b = a as Two // less specific
+let c = a as Three // more specific
 
-type Guitarist = {
-    name?: string,
-    active: boolean, // ? - optional field
-    albums: stringOrNumberArray
+let d = <One>'world'  // do't work in react
+let e = <string | number>'world' // do't work in react
+
+const addOrConcat = (a: number, b: number, c: 'add' | 'concat'): number | string => {
+    if (c === 'add')
+        return a + b
+    return '' + a + b
 }
 
-type UserId = stringOrNumber
+let myVal: string = addOrConcat(2, 2, 'concat') as string
 
-// interface UserId2 = stringOrNumber // not ok
+// Be careful! TS sees no problem - but a string is returned
+let nextVal: number = addOrConcat(2, 2, 'concat') as number
 
+// 10 as string //  not ok
+(10 as unknown) as string
 
-// ========== Literal type ========
+// The DOM
 
-let myName: 'Oleg'
+const img = document.querySelector('img')! // '!' - nut null
+const myImg = document.getElementById('#img') as HTMLImageElement
 
-let userName: 'Dave' | 'John' | 'Amy'
-
-userName = 'John'
-
-// ======= functions ==========
-
-const add = (a: number, b: number): number => {
-    return a + b
-}
-
-const logMsg = (message: any): void => {
-    console.log(message);
-}
-
-logMsg('Hello!')
-logMsg(add(2,3))
-// logMsg(add('a', 3)) // not ok 
-
-let subtract = function (c:number, d: number): number {
-    return c - d
-}
-
-logMsg(subtract(5,3))
-
-type mathFunction = (a: number, b: number) => number
-//== OR ==
-interface mathFunctionI {
-    (a: number, b: number): number
-}
-
-let multiply: mathFunction = function (c,d) {
-    return c * d
-}
-
-logMsg(multiply(2,2))
-
-// ====== optional parameters =========
-
-const  addAll = (a: number, b: number, c?: number): number => {
-    if (typeof c !== 'undefined')
-        return a + b + c
-    return a + b
-}
-
-const  sumAll = (a: number = 10, b: number, c: number = 2): number => {
-    return a + b + c
-}
-
-logMsg(addAll(2, 3, 2))
-logMsg(addAll(2, 3))
-logMsg(sumAll(2, 3))
-logMsg(sumAll(undefined, 3))
-
-// ===== Resp Parameters ====
-
-const total = (a: number, ...nums: number[]) => {
-    return a + nums.reduce((prev, curr) => prev + curr)
-}
-
-logMsg(total(1,2,3,4))
-
-// ==== never type ===
-
-const createError = (errMsg: string): never => {
-    throw new Error(errMsg)
-}
-
-const infinite = () => {
-    let i: number = 1
-    while (true){
-        i++
-        if (i > 100)
-            break  // with out the type is NEVER!!!!
-    } 
-}
-
-// custom type guard
-const isNumber = (value: any): boolean => {
-    return typeof value === 'string'
-        ? true : false
-}
-
-// use of the NEVER type
-const numberOrString = (value: number | string): string => {
-    if (typeof value === 'string')
-        return 'string'
-    if (isNumber(value))
-        return 'number'
-    return createError('This should never happen!')
-}
+img.src
